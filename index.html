@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexaBank — Banking Made Simple, Secure & Smart</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root {
+  --blue-primary: #7BBBFC;
+  --blue-secondary: #A9CFF5;
+  --blue-bg: #D3E9FA;
+  --white: #FFFFFF;
+  --text-primary: #1A1A1A;
+  --text-secondary: #797C7F;
+  --gradient: linear-gradient(135deg, #7BBBFC, #A9CFF5);
+  --gradient-deep: linear-gradient(135deg, #3a8fe8, #7BBBFC);
+  --shadow-glow: 0 8px 32px rgba(123,187,252,0.25);
+  --shadow-deep: 0 20px 60px rgba(58,143,232,0.18);
+  --radius-lg: 28px;
+  --radius-xl: 40px;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body { font-family: 'Poppins', sans-serif; background: var(--blue-bg); color: var(--text-primary); cursor: none; overflow-x: hidden; }
+
+/* CURSOR */
+#cursor { width:12px;height:12px;background:var(--blue-primary);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s,background 0.2s;mix-blend-mode:multiply; }
+#cursor-trail { width:36px;height:36px;border:2px solid rgba(123,187,252,0.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all 0.18s ease; }
+
+/* SCROLL PROGRESS */
+.scroll-progress { position:fixed;top:0;left:0;height:3px;background:var(--gradient-deep);z-index:2000;transform-origin:left;transform:scaleX(0); }
+
+/* NAVBAR */
+nav {
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:20px 60px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:all 0.4s ease;opacity:0;
+}
+nav.scrolled {
+  background:rgba(211,233,250,0.85);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.35);
+  padding:14px 60px;
+  box-shadow:0 4px 30px rgba(123,187,252,0.15);
+}
+.nav-logo { display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;color:var(--text-primary);text-decoration:none;letter-spacing:-0.5px; }
+.nav-logo span { background:var(--gradient-deep);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.logo-icon { width:38px;height:38px;background:var(--gradient-deep);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;color:white;box-shadow:0 4px 15px rgba(123,187,252,0.4); }
+.nav-links { display:flex;gap:36px;list-style:none; }
+.nav-links a { font-size:14px;font-weight:500;color:var(--text-secondary);text-decoration:none;transition:color 0.3s;position:relative; }
+.nav-links a::after { content:'';position:absolute;bottom:-4px;left:0;right:100%;height:2px;background:var(--blue-primary);transition:right 0.3s ease;border-radius:2px; }
+.nav-links a:hover { color:var(--text-primary); }
+.nav-links a:hover::after { right:0; }
+.nav-actions { display:flex;gap:14px;align-items:center; }
+.btn-ghost { padding:10px 22px;border-radius:14px;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--text-primary);background:transparent;border:1.5px solid rgba(123,187,252,0.4);cursor:none;transition:all 0.3s; }
+.btn-ghost:hover { background:rgba(123,187,252,0.12);border-color:var(--blue-primary); }
+.btn-primary { padding:10px 22px;border-radius:14px;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;color:white;background:var(--gradient-deep);border:none;cursor:none;box-shadow:0 4px 20px rgba(58,143,232,0.35);transition:all 0.3s;position:relative;overflow:hidden; }
+.btn-primary::before { content:'';position:absolute;inset:0;background:rgba(255,255,255,0.15);transform:translateX(-100%);transition:transform 0.4s ease; }
+.btn-primary:hover { transform:translateY(-2px);box-shadow:0 8px 30px rgba(58,143,232,0.45); }
+.btn-primary:hover::before { transform:translateX(0); }
+
+/* HERO */
+#hero { min-height:100vh;background:linear-gradient(160deg,#eaf4ff 0%,#d3e9fa 40%,#c0dcf7 100%);display:flex;align-items:center;padding:120px 60px 60px;position:relative;overflow:hidden; }
+.hero-bg-orb { position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none; }
+.orb1 { width:600px;height:600px;background:radial-gradient(circle,rgba(123,187,252,0.35) 0%,transparent 70%);top:-100px;right:-100px; }
+.orb2 { width:400px;height:400px;background:radial-gradient(circle,rgba(169,207,245,0.3) 0%,transparent 70%);bottom:-50px;left:100px; }
+.hero-content { flex:1;max-width:580px;z-index:2; }
+.hero-badge { display:inline-flex;align-items:center;gap:8px;background:rgba(123,187,252,0.15);border:1px solid rgba(123,187,252,0.3);border-radius:50px;padding:8px 18px;font-size:12px;font-weight:600;color:#3a8fe8;margin-bottom:28px;letter-spacing:0.5px; }
+.badge-dot { width:8px;height:8px;border-radius:50%;background:#3a8fe8;animation:pulse-dot 1.5s ease-in-out infinite; }
+@keyframes pulse-dot { 0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:0.7} }
+.hero-title { font-size:clamp(36px,5vw,64px);font-weight:800;line-height:1.1;letter-spacing:-2px;color:var(--text-primary);margin-bottom:24px; }
+.hero-title .highlight { background:var(--gradient-deep);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.hero-sub { font-size:16px;line-height:1.75;color:var(--text-secondary);margin-bottom:40px;max-width:460px;font-weight:400; }
+.hero-btns { display:flex;gap:16px;flex-wrap:wrap;margin-bottom:60px; }
+.btn-hero-primary { padding:16px 34px;border-radius:16px;font-size:15px;font-weight:700;font-family:'Poppins',sans-serif;color:white;background:var(--gradient-deep);border:none;cursor:none;box-shadow:0 6px 30px rgba(58,143,232,0.4);transition:all 0.3s; }
+.btn-hero-primary:hover { transform:translateY(-3px);box-shadow:0 12px 40px rgba(58,143,232,0.5); }
+.btn-hero-secondary { padding:16px 34px;border-radius:16px;font-size:15px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--text-primary);background:rgba(255,255,255,0.7);border:1.5px solid rgba(123,187,252,0.4);cursor:none;transition:all 0.3s;backdrop-filter:blur(10px); }
+.btn-hero-secondary:hover { background:white;transform:translateY(-3px);box-shadow:var(--shadow-glow); }
+.hero-stats { display:flex;gap:40px; }
+.stat-num { font-size:24px;font-weight:800;color:var(--text-primary);letter-spacing:-1px; }
+.stat-label { font-size:12px;font-weight:500;color:var(--text-secondary); }
+.hero-visual { flex:1;position:relative;height:580px;display:flex;align-items:center;justify-content:center;z-index:2; }
+.dash-card { position:absolute;background:rgba(255,255,255,0.75);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.9);border-radius:var(--radius-lg);box-shadow:var(--shadow-deep);padding:20px 24px;animation:float linear infinite; }
+@keyframes float { 0%,100%{transform:translateY(0px) rotate(var(--rot,0deg))}50%{transform:translateY(-14px) rotate(var(--rot,0deg))} }
+.card-main { width:300px;background:var(--gradient-deep);color:white;animation-duration:6s;--rot:-2deg;transform:rotate(-2deg);top:50px;right:80px;padding:28px; }
+.card-main-label { font-size:11px;opacity:0.75;letter-spacing:1px;text-transform:uppercase; }
+.card-main-balance { font-size:32px;font-weight:800;margin:8px 0 20px;letter-spacing:-1px; }
+.card-chip { width:34px;height:26px;background:linear-gradient(135deg,rgba(255,255,255,0.6),rgba(255,255,255,0.2));border-radius:6px;margin-bottom:28px; }
+.card-main-num { font-size:13px;opacity:0.8;letter-spacing:3px; }
+.card-main-footer { display:flex;justify-content:space-between;margin-top:20px;align-items:center; }
+.card-holder { font-size:12px;opacity:0.9;font-weight:600; }
+.card-brand { font-size:22px;font-weight:900;letter-spacing:-1px; }
+.card-transfer { width:220px;bottom:60px;right:200px;animation-duration:7.5s;animation-delay:-2s;--rot:3deg;transform:rotate(3deg); }
+.transfer-title { font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px; }
+.transfer-row { display:flex;align-items:center;gap:10px;margin-bottom:10px; }
+.t-avatar { width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white; }
+.t-info { flex:1; }
+.t-name { font-size:12px;font-weight:600; }
+.t-date { font-size:10px;color:var(--text-secondary); }
+.t-amount { font-size:13px;font-weight:700; }
+.t-amount.pos { color:#27ae60; }
+.t-amount.neg { color:#e74c3c; }
+.card-analytics { width:200px;top:40px;right:320px;animation-duration:8s;animation-delay:-1s;--rot:2deg;transform:rotate(2deg);padding:18px 20px; }
+.analytics-title { font-size:10px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px; }
+.analytics-val { font-size:26px;font-weight:800;color:var(--text-primary);margin:4px 0;letter-spacing:-1px; }
+.analytics-change { font-size:11px;font-weight:600;color:#27ae60; }
+.mini-chart { margin-top:12px;display:flex;align-items:flex-end;gap:4px;height:36px; }
+.bar { flex:1;border-radius:4px 4px 0 0;background:var(--gradient);opacity:0.6; }
+.bar:last-child { opacity:1; }
+.card-savings { width:180px;bottom:160px;right:60px;animation-duration:9s;animation-delay:-3s;--rot:-3deg;transform:rotate(-3deg);padding:16px 18px; }
+.sav-emoji { font-size:22px;margin-bottom:6px; }
+.sav-label { font-size:10px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px; }
+.sav-val { font-size:20px;font-weight:800;letter-spacing:-0.5px; }
+.sav-progress { margin-top:10px;height:6px;background:var(--blue-bg);border-radius:3px;overflow:hidden; }
+.sav-fill { height:100%;width:68%;background:var(--gradient-deep);border-radius:3px; }
+
+/* SECTION GLOBALS */
+.section-tag { display:block;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#3a8fe8;margin-bottom:16px;position:relative;padding-left:20px; }
+.section-tag::before { content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:12px;height:2px;background:#3a8fe8;border-radius:1px; }
+.section-title { font-size:clamp(28px,3.5vw,48px);font-weight:800;letter-spacing:-1.5px;color:var(--text-primary);line-height:1.15;margin-bottom:20px; }
+
+/* ══════════════════════════════
+   CHAOS TO CLARITY
+══════════════════════════════ */
+#chaos { padding:110px 60px;background:linear-gradient(180deg,#fff 0%,#f4faff 100%);overflow:hidden; }
+.chaos-header { text-align:center;margin-bottom:70px; }
+.chaos-header .section-tag { display:inline-block;text-align:center; }
+.chaos-header .section-title { text-align:center; }
+.chaos-header p { font-size:16px;color:var(--text-secondary);max-width:560px;margin:0 auto;line-height:1.8; }
+.chaos-grid { display:grid;grid-template-columns:1fr auto 1fr;gap:0 24px;align-items:start; }
+.chaos-col { display:flex;flex-direction:column;gap:20px; }
+.chaos-card { border-radius:22px;padding:26px 28px;display:flex;gap:18px;align-items:flex-start;transition:transform 0.35s cubic-bezier(0.23,1,0.32,1),box-shadow 0.35s;cursor:none; }
+.chaos-card:hover { transform:translateY(-6px); }
+.chaos-card.pain { background:linear-gradient(135deg,#fff2f2,#ffe8e8);border:1px solid rgba(239,68,68,0.15); }
+.chaos-card.pain:hover { box-shadow:0 14px 40px rgba(239,68,68,0.12); }
+.chaos-card.solution { background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1px solid rgba(123,187,252,0.25); }
+.chaos-card.solution:hover { box-shadow:0 14px 40px rgba(123,187,252,0.2); }
+.chaos-icon-box { width:50px;height:50px;flex-shrink:0;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px; }
+.chaos-card.pain .chaos-icon-box { background:linear-gradient(135deg,#fee2e2,#fecaca);border:1px solid rgba(239,68,68,0.2); }
+.chaos-card.solution .chaos-icon-box { background:var(--gradient-deep);box-shadow:0 4px 14px rgba(58,143,232,0.3); }
+.chaos-card-title { font-size:15px;font-weight:700;color:var(--text-primary);margin-bottom:6px; }
+.chaos-card-desc { font-size:13px;color:var(--text-secondary);line-height:1.7; }
+.chaos-divider { display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding-top:10px; }
+.chaos-arrow-btn { width:70px;height:70px;border-radius:50%;background:var(--gradient-deep);display:flex;align-items:center;justify-content:center;font-size:26px;color:white;box-shadow:0 8px 30px rgba(58,143,232,0.4);animation:arrow-pulse 2.5s ease-in-out infinite; }
+@keyframes arrow-pulse { 0%,100%{box-shadow:0 8px 30px rgba(58,143,232,0.4);transform:scale(1)}50%{box-shadow:0 12px 45px rgba(58,143,232,0.6);transform:scale(1.06)} }
+.chaos-vs-line { width:2px;height:60px;background:linear-gradient(180deg,transparent,rgba(123,187,252,0.4),transparent); }
+
+/* ══════════════════════════════
+   ABOUT — SPLIT LAYOUT
+   LEFT: text + stacked MVV cards
+   RIGHT: premium icon illustration
+══════════════════════════════ */
+#about { padding:110px 60px;background:var(--white); }
+.about-split { display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center; }
+
+/* Left col */
+.about-left-col .section-tag { text-align:left; }
+.about-left-col .section-title { text-align:left;font-size:clamp(26px,3vw,42px); }
+.about-para { font-size:15px;color:var(--text-secondary);line-height:1.85;margin-bottom:36px; }
+
+/* MVV stacked cards */
+.mvv-cards-stack { display:flex;flex-direction:column;gap:16px; }
+.mvv-sc {
+  display:flex;gap:16px;align-items:flex-start;
+  border-radius:20px;padding:20px 22px;
+  border:1.5px solid transparent;
+  transition:transform 0.35s cubic-bezier(0.23,1,0.32,1),box-shadow 0.35s,border-color 0.3s;
+  cursor:none;
+  opacity:1 !important;visibility:visible !important;
+}
+.mvv-sc:hover { transform:translateX(8px); }
+.mvv-sc-blue  { background:linear-gradient(135deg,#f0f8ff,#e4f1ff);border-color:rgba(58,143,232,0.15); }
+.mvv-sc-teal  { background:linear-gradient(135deg,#f0fdf8,#dcfdf0);border-color:rgba(0,137,123,0.15); }
+.mvv-sc-amber { background:linear-gradient(135deg,#fffbeb,#fef3c7);border-color:rgba(245,158,11,0.18); }
+.mvv-sc-blue:hover  { box-shadow:0 8px 30px rgba(58,143,232,0.15);border-color:rgba(58,143,232,0.3); }
+.mvv-sc-teal:hover  { box-shadow:0 8px 30px rgba(0,137,123,0.12);border-color:rgba(0,137,123,0.3); }
+.mvv-sc-amber:hover { box-shadow:0 8px 30px rgba(245,158,11,0.15);border-color:rgba(245,158,11,0.3); }
+.mvv-sc:hover .mvv-sc-icon { transform:scale(1.1) rotate(6deg); }
+.mvv-sc-icon { width:48px;height:48px;flex-shrink:0;border-radius:15px;display:flex;align-items:center;justify-content:center;transition:transform 0.3s; }
+.mvv-sc-icon-blue  { background:linear-gradient(135deg,#3a8fe8,#7BBBFC);box-shadow:0 4px 14px rgba(58,143,232,0.35); }
+.mvv-sc-icon-teal  { background:linear-gradient(135deg,#00897b,#26a69a);box-shadow:0 4px 14px rgba(0,137,123,0.35); }
+.mvv-sc-icon-amber { background:linear-gradient(135deg,#f59e0b,#fb923c);box-shadow:0 4px 14px rgba(245,158,11,0.35); }
+.mvv-sc-label { font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px; }
+.mvv-sc-blue  .mvv-sc-label { color:#3a8fe8; }
+.mvv-sc-teal  .mvv-sc-label { color:#00897b; }
+.mvv-sc-amber .mvv-sc-label { color:#f59e0b; }
+.mvv-sc-title { font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:4px;letter-spacing:-0.2px; }
+.mvv-sc-desc  { font-size:12px;color:var(--text-secondary);line-height:1.7; }
+
+/* Right col — premium icon illustration */
+.about-right-col { display:flex;align-items:center;justify-content:center; }
+.about-icon-scene {
+  position:relative;width:480px;height:480px;
+  display:flex;align-items:center;justify-content:center;
+}
+/* Ambient glow rings */
+.scene-ring {
+  position:absolute;border-radius:50%;border:1.5px solid rgba(123,187,252,0.18);
+  animation:ring-spin linear infinite;pointer-events:none;
+}
+.scene-ring-1 { width:340px;height:340px;animation-duration:18s; }
+.scene-ring-2 { width:420px;height:420px;animation-duration:28s;animation-direction:reverse;border-style:dashed;border-color:rgba(123,187,252,0.1); }
+@keyframes ring-spin { from{transform:rotate(0deg)}to{transform:rotate(360deg)} }
+/* Central icon card */
+.scene-center {
+  width:160px;height:160px;
+  background:var(--gradient-deep);
+  border-radius:40px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 20px 60px rgba(58,143,232,0.4);
+  animation:scene-float 5s ease-in-out infinite;
+  position:relative;z-index:3;
+}
+@keyframes scene-float { 0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-12px) rotate(2deg)} }
+/* Orbiting mini cards */
+.scene-orbit {
+  position:absolute;z-index:4;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,1);
+  border-radius:18px;
+  padding:14px 16px;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 8px 28px rgba(123,187,252,0.2);
+  min-width:150px;
+  animation:orbit-float linear infinite;
+}
+@keyframes orbit-float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)} }
+.scene-orbit-1 { top:30px;left:-20px;animation-duration:4.5s; }
+.scene-orbit-2 { top:30px;right:-20px;animation-duration:6s;animation-delay:-1.5s; }
+.scene-orbit-3 { bottom:40px;left:-10px;animation-duration:5.5s;animation-delay:-2.5s; }
+.scene-orbit-4 { bottom:40px;right:-10px;animation-duration:7s;animation-delay:-0.8s; }
+.orbit-icon { width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.orbit-label { font-size:11px;font-weight:700;color:var(--text-primary); }
+.orbit-val { font-size:10px;color:var(--text-secondary); }
+/* Floating stat pills */
+.scene-stat {
+  position:absolute;z-index:5;
+  background:var(--gradient-deep);
+  border-radius:50px;padding:8px 16px;
+  color:white;font-size:11px;font-weight:700;
+  box-shadow:0 6px 20px rgba(58,143,232,0.35);
+  white-space:nowrap;
+  animation:orbit-float linear infinite;
+}
+.scene-stat-1 { left:50%;top:2px;transform:translateX(-50%);animation-duration:5s; }
+.scene-stat-2 { left:50%;bottom:2px;transform:translateX(-50%);animation-duration:6.5s;animation-delay:-2s; }
+
+/* SERVICES */
+#services { padding:120px 60px;background:linear-gradient(180deg,#f0f8ff 0%,var(--blue-bg) 100%); }
+.services-header { text-align:center;margin-bottom:70px; }
+.services-header .section-tag { display:inline-block; }
+.services-header .section-title { text-align:center; }
+.services-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:28px; }
+.service-card { background:rgba(255,255,255,0.8);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.9);border-radius:var(--radius-lg);padding:36px 30px;transition:all 0.4s cubic-bezier(0.23,1,0.32,1);cursor:none;position:relative;overflow:hidden; }
+.service-card::before { content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient-deep);transform:scaleX(0);transform-origin:left;transition:transform 0.4s ease; }
+.service-card:hover { transform:translateY(-10px) scale(1.02);box-shadow:0 24px 60px rgba(123,187,252,0.3);border-color:rgba(123,187,252,0.4); }
+.service-card:hover::before { transform:scaleX(1); }
+.service-icon-wrap { width:60px;height:60px;background:linear-gradient(135deg,rgba(123,187,252,0.15),rgba(169,207,245,0.1));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:22px;transition:all 0.3s;border:1px solid rgba(123,187,252,0.2); }
+.service-card:hover .service-icon-wrap { background:var(--gradient-deep);transform:scale(1.1) rotate(5deg);box-shadow:0 8px 25px rgba(58,143,232,0.35); }
+.service-title { font-size:17px;font-weight:700;color:var(--text-primary);margin-bottom:10px; }
+.service-desc { font-size:13px;color:var(--text-secondary);line-height:1.7; }
+.service-arrow { display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#3a8fe8;margin-top:18px;transition:gap 0.3s; }
+.service-card:hover .service-arrow { gap:10px; }
+
+/* WHY US */
+#whyus { padding:120px 60px;background:var(--white); }
+#whyus > .section-tag { text-align:center;display:block; }
+#whyus > .section-title { text-align:center; }
+.whyus-grid { display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-top:60px; }
+.features-list { display:flex;flex-direction:column;gap:22px; }
+.feature-item { display:flex;gap:18px;align-items:flex-start;padding:22px 24px;border-radius:20px;border:1px solid rgba(123,187,252,0.12);background:linear-gradient(135deg,rgba(123,187,252,0.04),rgba(169,207,245,0.02));transition:all 0.3s; }
+.feature-item:hover { background:linear-gradient(135deg,rgba(123,187,252,0.1),rgba(169,207,245,0.06));border-color:rgba(123,187,252,0.3);transform:translateX(6px); }
+.feature-icon-box { width:46px;height:46px;flex-shrink:0;background:var(--gradient-deep);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 15px rgba(58,143,232,0.3); }
+.feature-text-title { font-size:14px;font-weight:700;color:var(--text-primary); }
+.feature-text-desc { font-size:12px;color:var(--text-secondary);margin-top:3px; }
+.stats-grid { display:grid;grid-template-columns:1fr 1fr;gap:24px; }
+.stat-card { background:linear-gradient(135deg,#eaf4ff,#d8eefb);border:1px solid rgba(123,187,252,0.3);border-radius:var(--radius-lg);padding:34px 28px;position:relative;overflow:hidden;transition:all 0.3s; }
+.stat-card:hover { transform:translateY(-6px);box-shadow:0 16px 45px rgba(123,187,252,0.25); }
+.stat-card::before { content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:radial-gradient(circle,rgba(123,187,252,0.25),transparent 70%);border-radius:50%; }
+.stat-card-num { font-size:36px;font-weight:900;letter-spacing:-2px;background:var(--gradient-deep);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.stat-card-label { font-size:13px;color:var(--text-secondary);font-weight:500;margin-top:4px; }
+
+/* LOANS */
+#loans { padding:120px 60px;background:linear-gradient(180deg,var(--blue-bg) 0%,#c8dff5 100%); }
+.loans-header { text-align:center;margin-bottom:60px; }
+.loans-header .section-tag { display:inline-block; }
+.loans-header .section-title { text-align:center; }
+.loans-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:22px; }
+.loan-card { background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.95);border-radius:var(--radius-lg);padding:30px 24px;transition:all 0.4s cubic-bezier(0.23,1,0.32,1);cursor:none;overflow:hidden;position:relative; }
+.loan-card::after { content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:var(--gradient-deep);transform:scaleX(0);transition:transform 0.4s;border-radius:0 0 var(--radius-lg) var(--radius-lg); }
+.loan-card:hover { transform:translateY(-12px);box-shadow:0 28px 70px rgba(123,187,252,0.35); }
+.loan-card:hover::after { transform:scaleX(1); }
+.loan-icon { font-size:36px;margin-bottom:18px; }
+.loan-type { font-size:17px;font-weight:700;color:var(--text-primary);margin-bottom:6px; }
+.loan-desc { font-size:12px;color:var(--text-secondary);margin-bottom:24px; }
+.loan-details { display:flex;flex-direction:column;gap:12px;margin-bottom:24px; }
+.loan-detail { display:flex;justify-content:space-between;align-items:center; }
+.loan-detail-label { font-size:11px;color:var(--text-secondary);font-weight:500; }
+.loan-detail-val { font-size:13px;font-weight:700;color:var(--text-primary); }
+.loan-divider { height:1px;background:rgba(123,187,252,0.15);margin:4px 0; }
+.btn-loan { width:100%;padding:12px;border-radius:14px;font-size:13px;font-weight:700;font-family:'Poppins',sans-serif;color:white;background:var(--gradient-deep);border:none;cursor:none;transition:all 0.3s;box-shadow:0 4px 15px rgba(58,143,232,0.3); }
+.btn-loan:hover { transform:translateY(-2px);box-shadow:0 8px 25px rgba(58,143,232,0.45); }
+
+/* SECURITY */
+#security { padding:120px 60px;background:linear-gradient(135deg,#0d1b2e 0%,#102040 50%,#0d2847 100%);color:white;position:relative;overflow:hidden; }
+.security-particles { position:absolute;inset:0;pointer-events:none; }
+.particle { position:absolute;border-radius:50%;background:rgba(123,187,252,0.4);animation:particle-float linear infinite; }
+@keyframes particle-float { 0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100px) scale(1);opacity:0} }
+.security-grid { display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:2; }
+.security-title { color:white;text-align:left; }
+.security-grid .section-tag { color:#7BBBFC;text-align:left; }
+.security-sub { color:rgba(255,255,255,0.6);font-size:15px;line-height:1.8;margin:20px 0 40px; }
+.security-features { display:flex;flex-direction:column;gap:18px; }
+.sec-feat { display:flex;gap:16px;align-items:center;background:rgba(255,255,255,0.06);border:1px solid rgba(123,187,252,0.2);border-radius:16px;padding:18px 20px;transition:all 0.3s; }
+.sec-feat:hover { background:rgba(123,187,252,0.12);border-color:rgba(123,187,252,0.4);transform:translateX(8px); }
+.sec-icon { font-size:22px;flex-shrink:0; }
+.sec-text { font-size:14px;font-weight:600;color:rgba(255,255,255,0.9); }
+.sec-sub { font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px; }
+.shield-wrap { display:flex;align-items:center;justify-content:center;height:420px;position:relative; }
+.shield-outer { width:220px;height:260px;background:linear-gradient(180deg,rgba(123,187,252,0.25),rgba(58,143,232,0.15));border:2px solid rgba(123,187,252,0.4);border-radius:50% 50% 40% 40% / 40% 40% 60% 60%;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 0 60px rgba(123,187,252,0.3);animation:shield-pulse 3s ease-in-out infinite; }
+@keyframes shield-pulse { 0%,100%{box-shadow:0 0 40px rgba(123,187,252,0.2)}50%{box-shadow:0 0 80px rgba(123,187,252,0.5)} }
+.shield-lock { font-size:60px; }
+.shield-ring { position:absolute;border-radius:50%;border:1px solid rgba(123,187,252,0.2);animation:ring-spin linear infinite; }
+.shield-ring:nth-child(1){width:300px;height:300px;animation-duration:10s;}
+.shield-ring:nth-child(2){width:380px;height:380px;animation-duration:15s;animation-direction:reverse;border-style:dashed;}
+.shield-ring:nth-child(3){width:440px;height:440px;animation-duration:20s;border:1px solid rgba(123,187,252,0.1);}
+
+/* TESTIMONIALS */
+#testimonials { padding:120px 0;background:var(--white);overflow:hidden; }
+.testi-header { text-align:center;margin-bottom:60px;padding:0 60px; }
+.testi-header .section-tag { display:inline-block; }
+.testi-header .section-title { text-align:center; }
+.marquee-wrap { overflow:hidden;position:relative; }
+.marquee-wrap::before,.marquee-wrap::after { content:'';position:absolute;top:0;bottom:0;width:150px;z-index:2;pointer-events:none; }
+.marquee-wrap::before { left:0;background:linear-gradient(90deg,white,transparent); }
+.marquee-wrap::after { right:0;background:linear-gradient(-90deg,white,transparent); }
+.marquee-track { display:flex;gap:24px;padding:12px 0;animation:marquee 35s linear infinite;width:max-content; }
+.marquee-track:hover { animation-play-state:paused; }
+@keyframes marquee { from{transform:translateX(0)}to{transform:translateX(-50%)} }
+.testi-card { background:linear-gradient(135deg,#f4faff,#eaf4ff);border:1px solid rgba(123,187,252,0.25);border-radius:var(--radius-lg);padding:28px;width:320px;flex-shrink:0;transition:all 0.3s; }
+.testi-card:hover { transform:translateY(-6px) scale(1.02);box-shadow:0 16px 45px rgba(123,187,252,0.25); }
+.testi-stars { color:#f59e0b;font-size:14px;margin-bottom:14px; }
+.testi-text { font-size:13px;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;font-style:italic; }
+.testi-author { display:flex;align-items:center;gap:12px; }
+.testi-avatar { width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:white;flex-shrink:0; }
+.testi-name { font-size:13px;font-weight:700;color:var(--text-primary); }
+.testi-role { font-size:11px;color:var(--text-secondary); }
+
+/* CONTACT */
+#contact { padding:120px 60px;background:linear-gradient(160deg,var(--blue-bg) 0%,#c8dff5 100%); }
+.contact-grid { display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start; }
+.contact-form-wrap { background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.95);border-radius:var(--radius-xl);padding:48px 40px;box-shadow:var(--shadow-deep); }
+.form-title { font-size:24px;font-weight:800;color:var(--text-primary);margin-bottom:32px;letter-spacing:-0.5px; }
+.form-group { position:relative;margin-bottom:22px; }
+.form-input,.form-textarea { width:100%;padding:16px 18px;background:rgba(211,233,250,0.3);border:1.5px solid rgba(123,187,252,0.25);border-radius:16px;font-size:14px;font-family:'Poppins',sans-serif;color:var(--text-primary);transition:all 0.3s;outline:none; }
+.form-textarea { height:120px;resize:none; }
+.form-input:focus,.form-textarea:focus { border-color:var(--blue-primary);background:rgba(255,255,255,0.9);box-shadow:0 0 0 4px rgba(123,187,252,0.15); }
+.form-input::placeholder,.form-textarea::placeholder { color:rgba(121,124,127,0.6); }
+.btn-submit { width:100%;padding:16px;background:var(--gradient-deep);border:none;border-radius:16px;font-size:15px;font-weight:700;font-family:'Poppins',sans-serif;color:white;cursor:none;box-shadow:0 6px 25px rgba(58,143,232,0.4);transition:all 0.3s; }
+.btn-submit:hover { transform:translateY(-2px);box-shadow:0 10px 35px rgba(58,143,232,0.5); }
+.contact-info { padding-top:20px; }
+.contact-info .section-tag { text-align:left; }
+.contact-info-title { font-size:36px;font-weight:800;color:var(--text-primary);letter-spacing:-1px;margin-bottom:16px; }
+.contact-info-sub { font-size:15px;color:var(--text-secondary);line-height:1.8;margin-bottom:48px; }
+.contact-items { display:flex;flex-direction:column;gap:22px; }
+.contact-item { display:flex;gap:18px;align-items:flex-start; }
+.contact-item-icon { width:50px;height:50px;flex-shrink:0;background:var(--gradient-deep);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 6px 20px rgba(58,143,232,0.3); }
+.contact-item-title { font-size:13px;font-weight:700;color:var(--text-primary); }
+.contact-item-val { font-size:13px;color:var(--text-secondary);margin-top:2px; }
+
+/* FOOTER */
+footer { background:linear-gradient(135deg,#0d1b2e,#102040);padding:80px 60px 30px;color:rgba(255,255,255,0.8);position:relative;overflow:hidden; }
+.footer-grid { display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;margin-bottom:60px; }
+.footer-brand .footer-logo-name { font-size:22px;font-weight:800;color:white;letter-spacing:-0.5px; }
+.footer-logo-name span { background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.footer-brand p { font-size:13px;color:rgba(255,255,255,0.45);margin:16px 0 28px;line-height:1.8; }
+.footer-socials { display:flex;gap:12px; }
+.social-btn { width:38px;height:38px;background:rgba(123,187,252,0.1);border:1px solid rgba(123,187,252,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;color:white;transition:all 0.3s; }
+.social-btn:hover { background:rgba(123,187,252,0.25);transform:translateY(-3px); }
+.footer-col-title { font-size:13px;font-weight:700;color:white;margin-bottom:20px;letter-spacing:0.5px; }
+.footer-links { list-style:none;display:flex;flex-direction:column;gap:12px; }
+.footer-links a { font-size:12px;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 0.3s; }
+.footer-links a:hover { color:var(--blue-primary); }
+.footer-divider { height:1px;background:rgba(255,255,255,0.07);margin-bottom:28px; }
+.footer-bottom { display:flex;justify-content:space-between;align-items:center; }
+.footer-copy { font-size:12px;color:rgba(255,255,255,0.3); }
+
+
+
+/* ══════════════════════════════════════════════════
+   WHY CHOOSE US
+══════════════════════════════════════════════════ */
+#whychoose {
+  padding: 120px 60px;
+  background: linear-gradient(160deg, #f0f8ff 0%, #e4f3ff 50%, #d8ecfb 100%);
+  position: relative;
+  overflow: hidden;
+}
+/* ambient blob */
+#whychoose::before {
+  content: '';
+  position: absolute;
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(123,187,252,0.18) 0%, transparent 65%);
+  border-radius: 50%;
+  top: -200px; right: -200px;
+  pointer-events: none;
+  animation: blob-drift 12s ease-in-out infinite alternate;
+}
+#whychoose::after {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(169,207,245,0.15) 0%, transparent 65%);
+  border-radius: 50%;
+  bottom: -150px; left: -100px;
+  pointer-events: none;
+  animation: blob-drift 16s ease-in-out infinite alternate-reverse;
+}
+@keyframes blob-drift {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(40px,30px) scale(1.1); }
+}
+
+.whychoose-header {
+  text-align: center;
+  margin-bottom: 72px;
+  position: relative; z-index: 2;
+}
+.whychoose-header .section-tag  { display: inline-block; text-align: center; }
+.whychoose-header .section-title { text-align: center; }
+.whychoose-header-sub {
+  font-size: 16px; color: var(--text-secondary);
+  max-width: 540px; margin: 0 auto; line-height: 1.8;
+}
+
+/* ── FEATURE CARDS GRID ── */
+.wcu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+  position: relative; z-index: 2;
+}
+
+.wcu-card {
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1.5px solid rgba(255,255,255,0.95);
+  border-radius: 28px;
+  padding: 38px 32px 34px;
+  position: relative;
+  overflow: hidden;
+  cursor: none;
+  transition: transform 0.4s cubic-bezier(0.23,1,0.32,1),
+              box-shadow 0.4s,
+              border-color 0.3s;
+  /* start visible — GSAP will animate in */
+  opacity: 1;
+}
+
+/* top accent bar that slides in on hover */
+.wcu-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  border-radius: 28px 28px 0 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.23,1,0.32,1);
+}
+/* corner glow */
+.wcu-card::after {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.wcu-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  border-color: rgba(123,187,252,0.35);
+}
+.wcu-card:hover::before { transform: scaleX(1); }
+.wcu-card:hover::after  { opacity: 1; }
+
+/* colour themes per card */
+.wcu-card.c-blue  ::before,
+.wcu-card.c-blue::before { background: linear-gradient(90deg,#3a8fe8,#7BBBFC); }
+.wcu-card.c-blue::after  { background: radial-gradient(circle, rgba(58,143,232,0.15), transparent 70%); }
+.wcu-card.c-blue:hover   { box-shadow: 0 20px 55px rgba(58,143,232,0.2); }
+
+.wcu-card.c-teal::before { background: linear-gradient(90deg,#00897b,#26a69a); }
+.wcu-card.c-teal::after  { background: radial-gradient(circle, rgba(0,137,123,0.15), transparent 70%); }
+.wcu-card.c-teal:hover   { box-shadow: 0 20px 55px rgba(0,137,123,0.18); }
+
+.wcu-card.c-purple::before { background: linear-gradient(90deg,#667eea,#9f7aea); }
+.wcu-card.c-purple::after  { background: radial-gradient(circle, rgba(102,126,234,0.15), transparent 70%); }
+.wcu-card.c-purple:hover   { box-shadow: 0 20px 55px rgba(102,126,234,0.2); }
+
+.wcu-card.c-amber::before { background: linear-gradient(90deg,#f59e0b,#fb923c); }
+.wcu-card.c-amber::after  { background: radial-gradient(circle, rgba(245,158,11,0.15), transparent 70%); }
+.wcu-card.c-amber:hover   { box-shadow: 0 20px 55px rgba(245,158,11,0.2); }
+
+.wcu-card.c-rose::before { background: linear-gradient(90deg,#f43f5e,#fb7185); }
+.wcu-card.c-rose::after  { background: radial-gradient(circle, rgba(244,63,94,0.13), transparent 70%); }
+.wcu-card.c-rose:hover   { box-shadow: 0 20px 55px rgba(244,63,94,0.18); }
+
+.wcu-card.c-indigo::before { background: linear-gradient(90deg,#4f46e5,#818cf8); }
+.wcu-card.c-indigo::after  { background: radial-gradient(circle, rgba(79,70,229,0.15), transparent 70%); }
+.wcu-card.c-indigo:hover   { box-shadow: 0 20px 55px rgba(79,70,229,0.2); }
+
+/* icon container */
+.wcu-icon {
+  width: 64px; height: 64px;
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 24px;
+  transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+  position: relative; z-index: 1;
+}
+.wcu-card:hover .wcu-icon { transform: scale(1.12) rotate(6deg); }
+
+.wcu-icon.i-blue   { background: linear-gradient(135deg,#3a8fe8,#7BBBFC); box-shadow: 0 6px 20px rgba(58,143,232,0.35); }
+.wcu-icon.i-teal   { background: linear-gradient(135deg,#00897b,#26a69a); box-shadow: 0 6px 20px rgba(0,137,123,0.35); }
+.wcu-icon.i-purple { background: linear-gradient(135deg,#667eea,#9f7aea); box-shadow: 0 6px 20px rgba(102,126,234,0.35); }
+.wcu-icon.i-amber  { background: linear-gradient(135deg,#f59e0b,#fb923c); box-shadow: 0 6px 20px rgba(245,158,11,0.35); }
+.wcu-icon.i-rose   { background: linear-gradient(135deg,#f43f5e,#fb7185); box-shadow: 0 6px 20px rgba(244,63,94,0.32); }
+.wcu-icon.i-indigo { background: linear-gradient(135deg,#4f46e5,#818cf8); box-shadow: 0 6px 20px rgba(79,70,229,0.35); }
+
+.wcu-card-num {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 8px;
+  position: relative; z-index: 1;
+}
+.c-blue   .wcu-card-num { color: #3a8fe8; }
+.c-teal   .wcu-card-num { color: #00897b; }
+.c-purple .wcu-card-num { color: #667eea; }
+.c-amber  .wcu-card-num { color: #f59e0b; }
+.c-rose   .wcu-card-num { color: #f43f5e; }
+.c-indigo .wcu-card-num { color: #4f46e5; }
+
+.wcu-card-title {
+  font-size: 18px; font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.4px; line-height: 1.25;
+  margin-bottom: 12px;
+  position: relative; z-index: 1;
+}
+.wcu-card-desc {
+  font-size: 13px; color: var(--text-secondary);
+  line-height: 1.78;
+  position: relative; z-index: 1;
+}
+
+/* animated stat pill at bottom */
+.wcu-stat {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 22px;
+  background: rgba(123,187,252,0.1);
+  border: 1px solid rgba(123,187,252,0.2);
+  border-radius: 50px;
+  padding: 7px 14px;
+  font-size: 12px; font-weight: 700;
+  transition: background 0.3s, border-color 0.3s;
+  position: relative; z-index: 1;
+}
+.c-blue   .wcu-stat { color: #3a8fe8; }
+.c-teal   .wcu-stat { color: #00897b; background: rgba(0,137,123,0.08); border-color: rgba(0,137,123,0.2); }
+.c-purple .wcu-stat { color: #667eea; background: rgba(102,126,234,0.08); border-color: rgba(102,126,234,0.2); }
+.c-amber  .wcu-stat { color: #f59e0b; background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.2); }
+.c-rose   .wcu-stat { color: #f43f5e; background: rgba(244,63,94,0.07); border-color: rgba(244,63,94,0.18); }
+.c-indigo .wcu-stat { color: #4f46e5; background: rgba(79,70,229,0.08); border-color: rgba(79,70,229,0.2); }
+.wcu-card:hover .wcu-stat { background: rgba(123,187,252,0.18); }
+.wcu-stat-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+.c-blue   .wcu-stat-dot { background: #3a8fe8; }
+.c-teal   .wcu-stat-dot { background: #00897b; }
+.c-purple .wcu-stat-dot { background: #667eea; }
+.c-amber  .wcu-stat-dot { background: #f59e0b; }
+.c-rose   .wcu-stat-dot { background: #f43f5e; }
+.c-indigo .wcu-stat-dot { background: #4f46e5; }
+
+/* bottom CTA strip */
+.wcu-cta {
+  text-align: center;
+  margin-top: 64px;
+  position: relative; z-index: 2;
+}
+.wcu-cta p {
+  font-size: 15px; color: var(--text-secondary);
+  margin-bottom: 24px; line-height: 1.7;
+}
+.btn-wcu-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 16px 40px; border-radius: 16px;
+  font-size: 15px; font-weight: 700; font-family: 'Poppins', sans-serif;
+  color: white; background: var(--gradient-deep);
+  border: none; cursor: none;
+  box-shadow: 0 6px 30px rgba(58,143,232,0.4);
+  transition: all 0.3s; position: relative; overflow: hidden;
+}
+.btn-wcu-cta::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.15);
+  transform: translateX(-100%);
+  transition: transform 0.4s;
+}
+.btn-wcu-cta:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(58,143,232,0.5); }
+.btn-wcu-cta:hover::before { transform: translateX(0); }
+
+
+
+
+  /* WHY US — right side image */
+  .whyus-img-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .whyus-img-wrap::before {
+    content: '';
+    position: absolute;
+    width: 360px; height: 360px;
+    background: radial-gradient(circle, rgba(123,187,252,0.22) 0%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(40px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .whyus-img {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 16px 40px rgba(58,143,232,0.18));
+    animation: img-float 6s ease-in-out infinite;
+  }
+
+
+  /* SECURITY — right side 3D image */
+  .security-img-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 480px;
+  }
+  .security-img-glow {
+    position: absolute;
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, rgba(123,187,252,0.3) 0%, transparent 65%);
+    border-radius: 50%;
+    filter: blur(50px);
+    pointer-events: none;
+    z-index: 0;
+    animation: shield-pulse 3.5s ease-in-out infinite;
+  }
+  .security-img {
+    width: 100%;
+    max-width: 460px;
+    height: auto;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 20px 50px rgba(58,143,232,0.35));
+    animation: img-float 6s ease-in-out infinite;
+  }
+
+/* ═══════════════════════════════════════════════════════════
+   COMPREHENSIVE RESPONSIVE MEDIA QUERIES
+   Breakpoints:
+   1440px+ → Large Desktop
+   1280px  → Desktop
+   1024px  → Small Desktop / Large Tablet (iPad Pro landscape)
+   900px   → iPad Pro portrait / Large Tablet
+   768px   → iPad / Tablet portrait
+   640px   → Large Phone (iPhone Plus, Samsung Galaxy)
+   480px   → Standard Phone
+   375px   → Small Phone (iPhone SE, older devices)
+═══════════════════════════════════════════════════════════ */
+
+/* ── 1440px: Large Desktop ── */
+@media (max-width: 1440px) {
+  nav { padding: 20px 50px; }
+  nav.scrolled { padding: 14px 50px; }
+  #hero,#chaos,#about,#services,#whyus,#whychoose,#loans,#security,#testimonials,#contact,footer {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+  .hero-title { font-size: 58px; }
+  .about-icon-scene { width: 460px; height: 460px; }
+}
+
+/* ── 1280px: Standard Desktop ── */
+@media (max-width: 1280px) {
+  nav { padding: 18px 40px; }
+  nav.scrolled { padding: 13px 40px; }
+  #hero,#chaos,#about,#services,#whyus,#whychoose,#loans,#security,#testimonials,#contact,footer {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  .hero-title { font-size: 52px; }
+  .about-split { gap: 60px; }
+  .about-icon-scene { width: 420px; height: 420px; }
+  .scene-orbit-1 { left: -10px; }
+  .scene-orbit-2 { right: -10px; }
+  .whyus-grid { gap: 60px; }
+  .loans-grid { grid-template-columns: repeat(4,1fr); gap:18px; }
+  .wcu-grid { gap: 20px; }
+}
+
+/* ── 1024px: Small Desktop / iPad Pro Landscape ── */
+@media (max-width: 1024px) {
+  /* Navbar */
+  nav { padding: 16px 30px; }
+  nav.scrolled { padding: 12px 30px; }
+  .nav-links { display: none; }
+
+  /* All sections padding */
+  #hero,#chaos,#about,#services,#whyus,#whychoose,#loans,#security,#contact,footer {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  #hero { padding-top: 100px; padding-bottom: 60px; }
+  #testimonials { padding-left: 0; padding-right: 0; }
+
+  /* Hero */
+  .hero-visual { display: none; }
+  .hero-title  { font-size: 46px; letter-spacing: -1.5px; }
+  .hero-sub    { font-size: 15px; }
+  .hero-stats  { gap: 30px; }
+
+  /* Chaos */
+  .chaos-grid { grid-template-columns: 1fr; gap: 20px; }
+  .chaos-divider { flex-direction: row; padding: 0; }
+  .chaos-vs-line {
+    width: 60px; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(123,187,252,0.4), transparent);
+  }
+  .chaos-arrow-btn { width: 56px; height: 56px; font-size: 20px; }
+
+  /* About */
+  .about-split  { grid-template-columns: 1fr; gap: 50px; }
+  .about-icon-scene { width: 380px; height: 380px; }
+  .scene-ring-2 { width: 400px; height: 400px; }
+  .scene-orbit  { min-width: 130px; }
+
+  /* Services */
+  .services-grid { grid-template-columns: repeat(2,1fr); gap: 20px; }
+
+  /* Why NexaBank */
+  .whyus-grid { grid-template-columns: 1fr; gap: 50px; }
+  .whyus-img  { max-width: 420px; display: block; margin: 0 auto; }
+
+  /* Why Choose Us */
+  .wcu-grid { grid-template-columns: repeat(2,1fr); gap: 20px; }
+  #whychoose { padding-left: 30px; padding-right: 30px; }
+
+  /* Loans */
+  .loans-grid { grid-template-columns: repeat(2,1fr); gap: 20px; }
+
+  /* Security */
+  .security-grid { grid-template-columns: 1fr; gap: 50px; }
+  .security-img  { max-width: 400px; display: block; margin: 0 auto; }
+  .security-img-wrap { height: auto; padding: 20px 0; }
+
+  /* Contact */
+  .contact-grid { grid-template-columns: 1fr; gap: 50px; }
+
+  /* Footer */
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  footer { padding: 60px 30px 24px; }
+}
+
+/* ── 900px: iPad Pro Portrait / Large Tablet ── */
+@media (max-width: 900px) {
+  .hero-title  { font-size: 40px; letter-spacing: -1px; }
+  .section-title { font-size: 32px; }
+
+  .about-icon-scene {
+    width: 320px; height: 320px;
+  }
+  .scene-orbit { min-width: 120px; padding: 10px 12px; }
+  .scene-orbit-1 { top: 10px; left: -5px; }
+  .scene-orbit-2 { top: 10px; right: -5px; }
+  .scene-orbit-3 { bottom: 20px; left: -5px; }
+  .scene-orbit-4 { bottom: 20px; right: -5px; }
+  .scene-center  { width: 130px; height: 130px; }
+  .scene-stat    { font-size: 10px; padding: 6px 12px; }
+
+  .wcu-card { padding: 28px 22px; }
+  .wcu-card-title { font-size: 16px; }
+
+  .chaos-card { padding: 20px 22px; }
+  .loan-card  { padding: 24px 20px; }
+
+  #hero,#chaos,#about,#services,#whyus,#whychoose,#loans,#security,#contact {
+    padding-top: 90px;
+    padding-bottom: 90px;
+  }
+}
+
+/* ── 768px: iPad / Tablet Portrait ── */
+@media (max-width: 768px) {
+  /* Navbar */
+  nav { padding: 14px 20px; }
+  nav.scrolled { padding: 10px 20px; }
+  .btn-ghost { display: none; }
+  .logo-icon { width: 34px; height: 34px; font-size: 16px; }
+  .nav-logo  { font-size: 19px; }
+
+  /* Sections */
+  #hero,#chaos,#about,#services,#whyus,#whychoose,#loans,#security,#contact {
+    padding: 80px 24px;
+  }
+  footer { padding: 50px 24px 20px; }
+
+  /* Hero */
+  #hero { padding-top: 90px; min-height: auto; }
+  .hero-title  { font-size: 36px; letter-spacing: -1px; }
+  .hero-sub    { font-size: 14px; max-width: 100%; }
+  .hero-btns   { gap: 12px; }
+  .btn-hero-primary,.btn-hero-secondary { padding: 13px 24px; font-size: 14px; }
+  .hero-badge  { font-size: 11px; padding: 7px 14px; }
+  .hero-stats  { gap: 20px; }
+  .stat-num    { font-size: 20px; }
+  .stat-label  { font-size: 11px; }
+
+  /* Section headings */
+  .section-title { font-size: 28px; letter-spacing: -1px; }
+  .section-tag   { font-size: 10px; }
+
+  /* Chaos */
+  .chaos-header p   { font-size: 14px; }
+  .chaos-card-title { font-size: 14px; }
+  .chaos-card-desc  { font-size: 12px; }
+  .chaos-icon-box   { width: 42px; height: 42px; font-size: 18px; }
+
+  /* About */
+  .about-left-col .section-title { font-size: 26px; }
+  .about-para  { font-size: 14px; }
+  .about-icon-scene { width: 290px; height: 290px; }
+  .scene-center { width: 110px; height: 110px; }
+  .scene-center svg { width: 52px; height: 52px; }
+  .scene-orbit  { min-width: 108px; padding: 9px 11px; gap: 7px; }
+  .orbit-label  { font-size: 10px; }
+  .orbit-val    { font-size: 9px; }
+  .scene-stat   { font-size: 9px; padding: 5px 10px; }
+  .mvv-sc       { padding: 16px 18px; gap: 13px; }
+  .mvv-sc-icon  { width: 42px; height: 42px; border-radius: 13px; }
+  .mvv-sc-title { font-size: 13px; }
+  .mvv-sc-desc  { font-size: 11.5px; }
+
+  /* Services */
+  .services-grid { grid-template-columns: repeat(2,1fr); gap: 16px; }
+  .service-card  { padding: 28px 22px; }
+  .service-title { font-size: 15px; }
+  .service-desc  { font-size: 12px; }
+
+  /* Why NexaBank */
+  .features-list { gap: 16px; }
+  .feature-item  { padding: 18px 20px; gap: 14px; }
+  .feature-icon-box { width: 40px; height: 40px; font-size: 18px; }
+  .feature-text-title { font-size: 13px; }
+  .feature-text-desc  { font-size: 11.5px; }
+  .whyus-img { max-width: 340px; }
+
+  /* Why Choose Us */
+  .wcu-grid   { grid-template-columns: repeat(2,1fr); gap: 16px; }
+  .wcu-card   { padding: 26px 20px; border-radius: 22px; }
+  .wcu-icon   { width: 54px; height: 54px; border-radius: 16px; margin-bottom: 18px; }
+  .wcu-card-title { font-size: 15px; }
+  .wcu-card-desc  { font-size: 12px; }
+  .wcu-stat   { font-size: 11px; padding: 6px 12px; margin-top: 16px; }
+  .whychoose-header-sub { font-size: 14px; }
+
+  /* Loans */
+  .loans-grid { grid-template-columns: repeat(2,1fr); gap: 16px; }
+  .loan-card  { padding: 24px 18px; }
+  .loan-type  { font-size: 15px; }
+
+  /* Security */
+  .security-sub  { font-size: 13px; }
+  .sec-feat      { padding: 14px 16px; gap: 12px; }
+  .sec-text      { font-size: 13px; }
+  .sec-sub       { font-size: 10px; }
+  .security-img  { max-width: 340px; }
+
+  /* Testimonials */
+  .testi-header { padding: 0 24px; }
+  .testi-card   { width: 280px; padding: 22px; }
+  .testi-text   { font-size: 12px; }
+
+  /* Contact */
+  .contact-form-wrap { padding: 36px 28px; border-radius: 28px; }
+  .form-title { font-size: 20px; }
+  .contact-info-title { font-size: 28px; }
+  .contact-info-sub   { font-size: 13px; margin-bottom: 32px; }
+
+  /* Footer */
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+}
+
+/* ── 640px: Large Phone (iPhone Plus, Samsung Galaxy) ── */
+@media (max-width: 640px) {
+  /* Sections */
+  #hero,#chaos,#about,#services,#whyus,#whychoose,#loans,#security,#contact {
+    padding: 70px 20px;
+  }
+  #hero { padding-top: 85px; }
+  footer { padding: 44px 20px 18px; }
+
+  /* Hero */
+  .hero-title { font-size: 32px; }
+  .btn-hero-primary,.btn-hero-secondary { padding: 12px 20px; font-size: 13px; }
+  .hero-stats { gap: 16px; }
+
+  /* Section titles */
+  .section-title { font-size: 26px; letter-spacing: -0.8px; }
+
+  /* About icon scene — hide on small phones, show only MVV cards */
+  .about-right-col { display: none; }
+  .about-split { grid-template-columns: 1fr; }
+
+  /* Chaos */
+  .chaos-grid { gap: 16px; }
+  .chaos-card { padding: 18px 16px; gap: 14px; }
+  .chaos-icon-box { width: 38px; height: 38px; font-size: 16px; border-radius: 12px; }
+
+  /* Services */
+  .services-grid { grid-template-columns: 1fr; gap: 14px; }
+  .service-card  { padding: 24px 20px; }
+
+  /* Why NexaBank */
+  .stats-grid,.about-features { grid-template-columns: 1fr 1fr; }
+  .whyus-img { max-width: 300px; }
+
+  /* Why Choose Us */
+  .wcu-grid { grid-template-columns: 1fr; gap: 14px; }
+  .wcu-card { padding: 24px 20px; }
+  .wcu-cta p { font-size: 14px; }
+  .btn-wcu-cta { padding: 14px 28px; font-size: 14px; }
+
+  /* Loans */
+  .loans-grid { grid-template-columns: repeat(2,1fr); gap: 14px; }
+  .loan-card  { padding: 20px 16px; }
+  .loan-type  { font-size: 14px; }
+  .loan-icon  { font-size: 28px; margin-bottom: 12px; }
+  .btn-loan   { padding: 10px; font-size: 12px; }
+
+  /* Security */
+  .security-features { gap: 12px; }
+  .security-img { max-width: 300px; }
+
+  /* Contact */
+  .contact-form-wrap { padding: 28px 20px; }
+  .form-input,.form-textarea { padding: 13px 15px; font-size: 13px; }
+  .contact-info-title { font-size: 24px; }
+
+  /* Footer */
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+
+/* ── 480px: Standard Phone ── */
+@media (max-width: 480px) {
+  /* Sections */
+  #hero,#chaos,#about,#services,#whyus,#whychoose,#loans,#security,#contact {
+    padding: 65px 16px;
+  }
+  #hero { padding-top: 80px; }
+  footer { padding: 40px 16px 16px; }
+
+  /* Navbar */
+  nav { padding: 12px 16px; }
+  nav.scrolled { padding: 10px 16px; }
+  .logo-icon { width: 30px; height: 30px; font-size: 14px; border-radius: 10px; }
+  .nav-logo  { font-size: 17px; gap: 8px; }
+  .btn-primary { padding: 8px 16px; font-size: 12px; }
+
+  /* Hero */
+  .hero-title  { font-size: 28px; letter-spacing: -0.5px; }
+  .hero-sub    { font-size: 13px; }
+  .hero-badge  { font-size: 10px; padding: 6px 12px; }
+  .hero-btns   { flex-direction: column; gap: 10px; }
+  .btn-hero-primary,.btn-hero-secondary { width: 100%; text-align: center; justify-content: center; }
+  .hero-stats  { gap: 12px; flex-wrap: wrap; }
+  .stat-num    { font-size: 18px; }
+
+  /* Section headings */
+  .section-title { font-size: 24px; }
+  .section-tag   { font-size: 9px; letter-spacing: 1.5px; }
+
+  /* About */
+  .mvv-sc { padding: 14px 16px; gap: 12px; }
+  .mvv-sc-icon  { width: 38px; height: 38px; border-radius: 12px; }
+  .mvv-sc-title { font-size: 12.5px; }
+  .mvv-sc-desc  { font-size: 11px; }
+  .about-para   { font-size: 13px; }
+
+  /* Services */
+  .service-icon-wrap { width: 50px; height: 50px; font-size: 22px; border-radius: 15px; }
+  .service-title { font-size: 14px; }
+
+  /* Why Choose Us */
+  .wcu-icon { width: 48px; height: 48px; border-radius: 15px; margin-bottom: 16px; }
+  .wcu-card-title { font-size: 14px; }
+  .wcu-card-num   { font-size: 9px; }
+  .wcu-stat { font-size: 10px; padding: 5px 10px; margin-top: 14px; }
+
+  /* Loans */
+  .loans-grid { grid-template-columns: 1fr; }
+  .loan-details { gap: 10px; }
+
+  /* Security */
+  .sec-feat  { padding: 12px 14px; }
+  .sec-text  { font-size: 12px; }
+  .security-title { font-size: 26px !important; }
+
+  /* Contact */
+  .contact-items { gap: 16px; }
+  .contact-item-icon { width: 42px; height: 42px; font-size: 17px; border-radius: 13px; }
+  .btn-submit { padding: 14px; font-size: 14px; }
+
+  /* Testimonials */
+  .testi-card { width: 260px; padding: 20px 18px; }
+
+  /* Footer */
+  .footer-grid { grid-template-columns: 1fr; gap: 20px; }
+  .footer-brand { grid-column: auto; }
+  .footer-col-title { font-size: 12px; }
+  .footer-links a { font-size: 11px; }
+  .footer-copy { font-size: 10px; }
+}
+
+/* ── 375px: Small Phone (iPhone SE, iPhone 8) ── */
+@media (max-width: 375px) {
+  #hero,#chaos,#about,#services,#whyus,#whychoose,#loans,#security,#contact {
+    padding: 60px 14px;
+  }
+  #hero { padding-top: 75px; }
+
+  .hero-title    { font-size: 24px; }
+  .section-title { font-size: 22px; }
+  .hero-sub      { font-size: 12.5px; }
+
+  .nav-logo  { font-size: 15px; }
+  .logo-icon { width: 28px; height: 28px; font-size: 13px; }
+
+  .chaos-card   { padding: 14px 14px; gap: 12px; }
+  .chaos-icon-box { width: 36px; height: 36px; font-size: 15px; }
+  .chaos-card-title { font-size: 13px; }
+  .chaos-card-desc  { font-size: 11px; }
+
+  .wcu-card { padding: 20px 16px; }
+  .wcu-card-title { font-size: 13px; }
+  .wcu-icon { width: 44px; height: 44px; }
+
+  .loan-card { padding: 18px 14px; }
+  .loan-type { font-size: 13px; }
+  .btn-loan  { font-size: 11px; padding: 9px; }
+
+  .sec-feat { gap: 10px; }
+  .sec-text { font-size: 11.5px; }
+
+  .contact-form-wrap { padding: 22px 16px; }
+  .form-title { font-size: 18px; }
+  .testi-card { width: 240px; }
+  .testi-text { font-size: 11px; }
+}
+
+/* ── Landscape phones ── */
+@media (max-width: 768px) and (orientation: landscape) {
+  #hero { min-height: auto; padding: 70px 30px 40px; }
+  .hero-title { font-size: 30px; }
+  .hero-sub   { font-size: 13px; margin-bottom: 24px; }
+  .hero-btns  { margin-bottom: 30px; }
+  .hero-stats { gap: 16px; }
+  .about-icon-scene { display: none; }
+}
+
+/* ── High DPI / Retina screens ── */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .about-float-img,
+  .whyus-img,
+  .security-img { image-rendering: -webkit-optimize-contrast; }
+}
+
+
+</style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <div class="logo-icon">N</div>
+    <span>NexaBank</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#about">About Us</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#loans">Loans</a></li>
+    <li><a href="#contact">Contact Us</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-ghost">Login</button>
+    <button class="btn-primary">Open Account</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-orb orb1"></div>
+  <div class="hero-bg-orb orb2"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><div class="badge-dot"></div>Next-Gen Digital Banking Platform</div>
+    <h1 class="hero-title">Banking Made<br><span class="highlight">Simple, Secure</span><br>&amp; Smart</h1>
+    <p class="hero-sub">Manage your money, transfer funds, apply for loans, and grow your wealth from anywhere with our modern digital banking platform.</p>
+    <div class="hero-btns">
+      <button class="btn-hero-primary">Open Account →</button>
+      <button class="btn-hero-secondary">▶ Watch Demo</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num" data-count="10">0</div><div class="stat-label">Million+ Users</div></div>
+      <div class="stat-item"><div class="stat-num" data-count="1200">0</div><div class="stat-label">Branches</div></div>
+      <div class="stat-item"><div class="stat-num" data-count="50">0</div><div class="stat-label">Countries</div></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="dash-card card-main">
+      <div class="card-chip"></div>
+      <div class="card-main-label">Total Balance</div>
+      <div class="card-main-balance">₹2,45,820</div>
+      <div class="card-main-num">•••• •••• •••• 4281</div>
+      <div class="card-main-footer"><div class="card-holder">Rahul Sharma</div><div class="card-brand">NEXA</div></div>
+    </div>
+    <div class="dash-card card-transfer">
+      <div class="transfer-title">Recent Transfers</div>
+      <div class="transfer-row"><div class="t-avatar" style="background:linear-gradient(135deg,#7BBBFC,#3a8fe8)">P</div><div class="t-info"><div class="t-name">Priya M.</div><div class="t-date">Today, 9:41 AM</div></div><div class="t-amount neg">-₹3,500</div></div>
+      <div class="transfer-row"><div class="t-avatar" style="background:linear-gradient(135deg,#a8edea,#27ae60)">A</div><div class="t-info"><div class="t-name">Amit K.</div><div class="t-date">Yesterday</div></div><div class="t-amount pos">+₹12,000</div></div>
+      <div class="transfer-row"><div class="t-avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div><div class="t-info"><div class="t-name">Salary Credit</div><div class="t-date">Jun 1</div></div><div class="t-amount pos">+₹85,000</div></div>
+    </div>
+    <div class="dash-card card-analytics">
+      <div class="analytics-title">Monthly Spend</div>
+      <div class="analytics-val">₹38,240</div>
+      <div class="analytics-change">↑ 12.5% vs last month</div>
+      <div class="mini-chart">
+        <div class="bar" style="height:55%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:45%"></div><div class="bar" style="height:85%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:100%"></div>
+      </div>
+    </div>
+    <div class="dash-card card-savings">
+      <div class="sav-emoji">🎯</div>
+      <div class="sav-label">Savings Goal</div>
+      <div class="sav-val">₹1.2L / 1.75L</div>
+      <div class="sav-progress"><div class="sav-fill"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAOS TO CLARITY -->
+<section id="chaos">
+  <div class="chaos-header">
+    <div class="section-tag">Problem → Solution</div>
+    <h2 class="section-title">From Chaos to Clarity</h2>
+    <p>Banks face complex operational challenges every day. We transform these pain points into seamless, delightful digital experiences.</p>
+  </div>
+  <div class="chaos-grid">
+    <div class="chaos-col">
+      <div class="chaos-card pain"><div class="chaos-icon-box">📋</div><div><div class="chaos-card-title">Manual Processes</div><div class="chaos-card-desc">Paper-based forms, handwritten records, and time-consuming administrative tasks that drain productivity.</div></div></div>
+      <div class="chaos-card pain"><div class="chaos-icon-box">📡</div><div><div class="chaos-card-title">Scattered Communication</div><div class="chaos-card-desc">No unified channel between bankers, customers, and administrators — critical messages get lost.</div></div></div>
+      <div class="chaos-card pain"><div class="chaos-icon-box">📉</div><div><div class="chaos-card-title">Lack of Insights</div><div class="chaos-card-desc">No real-time data on transaction performance, customer behaviour, or operational efficiency.</div></div></div>
+    </div>
+    <div class="chaos-divider">
+      <div class="chaos-vs-line"></div>
+      <div class="chaos-arrow-btn">→</div>
+      <div class="chaos-vs-line"></div>
+    </div>
+    <div class="chaos-col">
+      <div class="chaos-card solution"><div class="chaos-icon-box">⚡</div><div><div class="chaos-card-title">Automated Operations</div><div class="chaos-card-desc">Digital workflows, instant report generation, and AI-powered task automation that saves hours every day.</div></div></div>
+      <div class="chaos-card solution"><div class="chaos-icon-box">🔗</div><div><div class="chaos-card-title">Unified Platform</div><div class="chaos-card-desc">One ecosystem connecting all stakeholders with real-time notifications, shared dashboards, and live chat.</div></div></div>
+      <div class="chaos-card solution"><div class="chaos-icon-box">📊</div><div><div class="chaos-card-title">Data-Driven Decisions</div><div class="chaos-card-desc">Comprehensive analytics and live insights for smarter financial planning and better customer outcomes.</div></div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- WHY CHOOSE US -->
+<section id="whychoose">
+  <div class="whychoose-header">
+    <div class="section-tag">Why Choose Us</div>
+    <h2 class="section-title">Banking Built Around<br>What Matters to You</h2>
+    <p class="whychoose-header-sub">Six reasons why 10 million Indians trust NexaBank with their financial future — every single day.</p>
+  </div>
+
+  <div class="wcu-grid">
+
+    <!-- Card 1 — 24/7 Support -->
+    <div class="wcu-card c-blue">
+      <div class="wcu-icon i-blue">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.03z"/>
+        </svg>
+      </div>
+      <div class="wcu-card-num">01 &nbsp;/&nbsp; Support</div>
+      <div class="wcu-card-title">24/7 Live Human Support</div>
+      <div class="wcu-card-desc">Talk to a real banking expert any time — day, night, weekends, or holidays. Video banking, live chat, and dedicated relationship managers always available.</div>
+      <div class="wcu-stat"><div class="wcu-stat-dot"></div>Average response: 47 seconds</div>
+    </div>
+
+    <!-- Card 2 — Security -->
+    <div class="wcu-card c-teal">
+      <div class="wcu-icon i-teal">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <div class="wcu-card-num">02 &nbsp;/&nbsp; Security</div>
+      <div class="wcu-card-title">Fort-Knox Level Security</div>
+      <div class="wcu-card-desc">256-bit AES encryption, biometric authentication, AI fraud detection analyzing 200+ signals per transaction, and multi-factor authentication on every login.</div>
+      <div class="wcu-stat"><div class="wcu-stat-dot"></div>Zero fraud incidents in 2024</div>
+    </div>
+
+    <!-- Card 3 — Instant Transfers -->
+    <div class="wcu-card c-purple">
+      <div class="wcu-icon i-purple">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+      </div>
+      <div class="wcu-card-num">03 &nbsp;/&nbsp; Speed</div>
+      <div class="wcu-card-title">Instant Money Transfers</div>
+      <div class="wcu-card-desc">Send money anywhere in India in under 2 seconds via IMPS/UPI. International wire transfers settle in under 2 hours across 100+ currencies worldwide.</div>
+      <div class="wcu-stat"><div class="wcu-stat-dot"></div>₹2,400 Cr+ transferred daily</div>
+    </div>
+
+    <!-- Card 4 — AI Powered -->
+    <div class="wcu-card c-amber">
+      <div class="wcu-icon i-amber">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+          <circle cx="12" cy="16" r="1" fill="white"/>
+        </svg>
+      </div>
+      <div class="wcu-card-num">04 &nbsp;/&nbsp; Intelligence</div>
+      <div class="wcu-card-title">AI-Powered Smart Banking</div>
+      <div class="wcu-card-desc">Personalized spending insights, automated savings rules, smart EMI recommendations, and predictive alerts — your money working harder with every transaction.</div>
+      <div class="wcu-stat"><div class="wcu-stat-dot"></div>ML models trained on 50M+ txns</div>
+    </div>
+
+    <!-- Card 5 — Low Fees -->
+    <div class="wcu-card c-rose">
+      <div class="wcu-icon i-rose">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <div class="wcu-card-num">05 &nbsp;/&nbsp; Value</div>
+      <div class="wcu-card-title">Zero Hidden Fees, Ever</div>
+      <div class="wcu-card-desc">No maintenance charges, no surprise deductions, no confusing fine print. The most transparent fee structure in Indian banking — what you see is exactly what you pay.</div>
+      <div class="wcu-stat"><div class="wcu-stat-dot"></div>Save ₹4,200/yr vs avg banks</div>
+    </div>
+
+    <!-- Card 6 — Global Reach -->
+    <div class="wcu-card c-indigo">
+      <div class="wcu-icon i-indigo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+      </div>
+      <div class="wcu-card-num">06 &nbsp;/&nbsp; Global</div>
+      <div class="wcu-card-title">50+ Countries, One Account</div>
+      <div class="wcu-card-desc">Multi-currency accounts, best-in-class forex rates, global ATM access with zero withdrawal fees, and local banking partnerships across 50+ countries.</div>
+      <div class="wcu-stat"><div class="wcu-stat-dot"></div>Best FX rates, guaranteed</div>
+    </div>
+
+  </div>
+
+  <!-- CTA strip -->
+  <div class="wcu-cta">
+    <p>Join over 10 million Indians who've already made the switch to smarter banking.</p>
+    <button class="btn-wcu-cta">Open Free Account &nbsp;→</button>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-split">
+
+    <!-- LEFT: content + MVV cards -->
+    <div class="about-left-col">
+      <div class="section-tag">About NexaBank</div>
+      <h2 class="section-title">Trusted by Millions.<br>Built for Everyone.</h2>
+      <p class="about-para">NexaBank is a next-generation digital banking platform that combines cutting-edge technology with human-centered design to give you complete control over your financial life. We're building the financial infrastructure for India's digital future — secure, transparent, and always accessible.</p>
+      <div class="mvv-cards-stack">
+        <div class="mvv-sc mvv-sc-blue">
+          <div class="mvv-sc-icon mvv-sc-icon-blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <div class="mvv-sc-body">
+            <div class="mvv-sc-label">Our Mission</div>
+            <div class="mvv-sc-title">Democratize Banking for Every Indian</div>
+            <div class="mvv-sc-desc">Empowering individuals and businesses with technology-first financial tools — accessible, affordable, and transparent regardless of income or location.</div>
+          </div>
+        </div>
+        <div class="mvv-sc mvv-sc-teal">
+          <div class="mvv-sc-icon mvv-sc-icon-teal">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="mvv-sc-body">
+            <div class="mvv-sc-label">Our Vision</div>
+            <div class="mvv-sc-title">A World Where Everyone Thrives Financially</div>
+            <div class="mvv-sc-desc">A future where every person — from a street vendor in Varanasi to a startup founder in Bengaluru — has world-class financial infrastructure.</div>
+          </div>
+        </div>
+        <div class="mvv-sc mvv-sc-amber">
+          <div class="mvv-sc-icon mvv-sc-icon-amber">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div class="mvv-sc-body">
+            <div class="mvv-sc-label">Our Approach</div>
+            <div class="mvv-sc-title">Trust, Transparency &amp; Innovation First</div>
+            <div class="mvv-sc-desc">Every product decision driven by customer trust, radical transparency in fees, and a relentless commitment to pushing fintech forward.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: premium icon scene -->
+    <div class="about-right-col">
+      <div class="about-icon-scene">
+        <div class="scene-ring scene-ring-1"></div>
+        <div class="scene-ring scene-ring-2"></div>
+
+        <!-- Central icon -->
+        <div class="scene-center">
+          <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="3"/>
+            <line x1="2" y1="10" x2="22" y2="10"/>
+            <line x1="6" y1="15" x2="8" y2="15"/>
+            <line x1="11" y1="15" x2="14" y2="15"/>
+          </svg>
+        </div>
+
+        <!-- Orbiting cards -->
+        <div class="scene-orbit scene-orbit-1">
+          <div class="orbit-icon" style="background:linear-gradient(135deg,#3a8fe8,#7BBBFC)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div><div class="orbit-label">256-bit SSL</div><div class="orbit-val">Bank-grade security</div></div>
+        </div>
+
+        <div class="scene-orbit scene-orbit-2">
+          <div class="orbit-icon" style="background:linear-gradient(135deg,#00897b,#26a69a)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div><div class="orbit-label">Live Analytics</div><div class="orbit-val">Real-time insights</div></div>
+        </div>
+
+        <div class="scene-orbit scene-orbit-3">
+          <div class="orbit-icon" style="background:linear-gradient(135deg,#f59e0b,#fb923c)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div><div class="orbit-label">Instant Transfers</div><div class="orbit-val">Under 2 seconds</div></div>
+        </div>
+
+        <div class="scene-orbit scene-orbit-4">
+          <div class="orbit-icon" style="background:linear-gradient(135deg,#667eea,#764ba2)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div><div class="orbit-label">10M+ Customers</div><div class="orbit-val">Trusted globally</div></div>
+        </div>
+
+        <!-- Stat pills -->
+        <div class="scene-stat scene-stat-1">🇮🇳 Serving 50+ Countries</div>
+        <div class="scene-stat scene-stat-2">✅ RBI Regulated &amp; DICGC Insured</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header">
+    <div class="section-tag">Our Services</div>
+    <h2 class="section-title">Everything You Need,<br>In One Place</h2>
+  </div>
+  <div class="services-grid">
+    <div class="service-card"><div class="service-icon-wrap">💰</div><div class="service-title">Savings Account</div><div class="service-desc">Earn up to 7.5% interest annually with zero minimum balance requirement and instant access anytime.</div><div class="service-arrow">Explore more <span>→</span></div></div>
+    <div class="service-card"><div class="service-icon-wrap">🏢</div><div class="service-title">Current Account</div><div class="service-desc">Power your business with unlimited transactions, overdraft facilities, and dedicated relationship management.</div><div class="service-arrow">Explore more <span>→</span></div></div>
+    <div class="service-card"><div class="service-icon-wrap">💳</div><div class="service-title">Credit Cards</div><div class="service-desc">Premium cashback, travel rewards, and zero foreign transaction fees with our exclusive credit cards.</div><div class="service-arrow">Explore more <span>→</span></div></div>
+    <div class="service-card"><div class="service-icon-wrap">📈</div><div class="service-title">Fixed Deposits</div><div class="service-desc">Lock in guaranteed returns up to 8.5% p.a. with flexible tenures from 7 days to 10 years.</div><div class="service-arrow">Explore more <span>→</span></div></div>
+    <div class="service-card"><div class="service-icon-wrap">📱</div><div class="service-title">Mobile Banking</div><div class="service-desc">Full-featured app with biometric login, instant UPI transfers, bill payments, and real-time notifications.</div><div class="service-arrow">Explore more <span>→</span></div></div>
+    <div class="service-card"><div class="service-icon-wrap">🌐</div><div class="service-title">International Transfers</div><div class="service-desc">Send money globally at best exchange rates. Transfers settle in under 2 hours across 100+ currencies.</div><div class="service-arrow">Explore more <span>→</span></div></div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section id="whyus">
+  <div class="section-tag">Why NexaBank</div>
+  <h2 class="section-title">The Future of Banking<br>Is Here Today</h2>
+  <div class="whyus-grid">
+    <div class="features-list">
+      <div class="feature-item"><div class="feature-icon-box">🕐</div><div><div class="feature-text-title">24/7 Live Support</div><div class="feature-text-desc">Round-the-clock human support via chat, call, and video banking</div></div></div>
+      <div class="feature-item"><div class="feature-icon-box">🔒</div><div><div class="feature-text-title">Secure Transactions</div><div class="feature-text-desc">Every transaction verified with multi-layer security protocols</div></div></div>
+      <div class="feature-item"><div class="feature-icon-box">⚡</div><div><div class="feature-text-title">Instant Transfers</div><div class="feature-text-desc">Real-time money movement with IMPS and UPI integration</div></div></div>
+      <div class="feature-item"><div class="feature-icon-box">🤖</div><div><div class="feature-text-title">AI Fraud Detection</div><div class="feature-text-desc">ML models monitoring every transaction for anomalies 24/7</div></div></div>
+      <div class="feature-item"><div class="feature-icon-box">💸</div><div><div class="feature-text-title">Ultra-Low Fees</div><div class="feature-text-desc">Zero hidden charges and the most competitive fee structure in India</div></div></div>
+    </div>
+    <div class="whyus-img-wrap">
+        <img src="image1.png" alt="">
+    </div>
+  </div>
+</section>
+
+<!-- LOANS -->
+<section id="loans">
+  <div class="loans-header">
+    <div class="section-tag">Loan Products</div>
+    <h2 class="section-title">Loans Tailored<br>For Your Dreams</h2>
+  </div>
+  <div class="loans-grid">
+    <div class="loan-card"><div class="loan-icon">🏠</div><div class="loan-type">Home Loan</div><div class="loan-desc">Make your dream home a reality with flexible EMIs</div><div class="loan-details"><div class="loan-detail"><span class="loan-detail-label">Interest Rate</span><span class="loan-detail-val">8.50% p.a.</span></div><div class="loan-divider"></div><div class="loan-detail"><span class="loan-detail-label">Processing Time</span><span class="loan-detail-val">48 Hours</span></div><div class="loan-divider"></div><div class="loan-detail"><span class="loan-detail-label">Max Amount</span><span class="loan-detail-val">₹5 Crore</span></div></div><button class="btn-loan">Apply Now →</button></div>
+    <div class="loan-card"><div class="loan-icon">👤</div><div class="loan-type">Personal Loan</div><div class="loan-desc">Quick funds for any personal need without collateral</div><div class="loan-details"><div class="loan-detail"><span class="loan-detail-label">Interest Rate</span><span class="loan-detail-val">10.99% p.a.</span></div><div class="loan-divider"></div><div class="loan-detail"><span class="loan-detail-label">Processing Time</span><span class="loan-detail-val">2 Hours</span></div><div class="loan-divider"></div><div class="loan-detail"><span class="loan-detail-label">Max Amount</span><span class="loan-detail-val">₹50 Lakh</span></div></div><button class="btn-loan">Apply Now →</button></div>
+    <div class="loan-card"><div class="loan-icon">🚗</div><div class="loan-type">Vehicle Loan</div><div class="loan-desc">Drive your dream car or bike home today</div><div class="loan-details"><div class="loan-detail"><span class="loan-detail-label">Interest Rate</span><span class="loan-detail-val">9.25% p.a.</span></div><div class="loan-divider"></div><div class="loan-detail"><span class="loan-detail-label">Processing Time</span><span class="loan-detail-val">24 Hours</span></div><div class="loan-divider"></div><div class="loan-detail"><span class="loan-detail-label">Max Amount</span><span class="loan-detail-val">₹1 Crore</span></div></div><button class="btn-loan">Apply Now →</button></div>
+    <div class="loan-card"><div class="loan-icon">🎓</div><div class="loan-type">Education Loan</div><div class="loan-desc">Invest in your future with flexible study loans</div><div class="loan-details"><div class="loan-detail"><span class="loan-detail-label">Interest Rate</span><span class="loan-detail-val">7.75% p.a.</span></div><div class="loan-divider"></div><div class="loan-detail"><span class="loan-detail-label">Processing Time</span><span class="loan-detail-val">72 Hours</span></div><div class="loan-divider"></div><div class="loan-detail"><span class="loan-detail-label">Max Amount</span><span class="loan-detail-val">₹1.5 Crore</span></div></div><button class="btn-loan">Apply Now →</button></div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section id="security">
+  <div class="security-particles" id="particles"></div>
+  <div class="security-grid">
+    <div>
+      <div class="section-tag" style="color:#7BBBFC;text-align:left;">Security &amp; Trust</div>
+      <h2 class="section-title security-title" style="text-align:left;">Your Money is<br>Fort-Knox Safe</h2>
+      <p class="security-sub">We combine military-grade encryption with AI-driven fraud detection to ensure your financial assets are protected around the clock, across every transaction.</p>
+      <div class="security-features">
+        <div class="sec-feat"><div class="sec-icon">🔐</div><div><div class="sec-text">256-bit AES Encryption</div><div class="sec-sub">Bank-grade encryption on all data at rest and in transit</div></div></div>
+        <div class="sec-feat"><div class="sec-icon">🧬</div><div><div class="sec-text">Biometric Authentication</div><div class="sec-sub">Face ID, fingerprint, and behavioral biometrics</div></div></div>
+        <div class="sec-feat"><div class="sec-icon">👁️</div><div><div class="sec-text">Real-time Fraud Monitoring</div><div class="sec-sub">AI analyzing 200+ signals per transaction</div></div></div>
+        <div class="sec-feat"><div class="sec-icon">☁️</div><div><div class="sec-text">Secure Cloud Infrastructure</div><div class="sec-sub">ISO 27001 certified, 99.99% uptime SLA</div></div></div>
+        <div class="sec-feat"><div class="sec-icon">📲</div><div><div class="sec-text">Multi-factor Authentication</div><div class="sec-sub">OTP + biometric + device binding for all logins</div></div></div>
+      </div>
+    </div>
+    <div class="security-img-wrap">
+      <div class="security-img-glow"></div>
+      <img src="image2.png" alt="">
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="testi-header">
+    <div class="section-tag">Testimonials</div>
+    <h2 class="section-title">Loved by Millions<br>of NexaBank Users</h2>
+  </div>
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"NexaBank changed how I handle my finances. The app is incredibly intuitive, transfers are instant, and the customer support is unmatched."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#7BBBFC,#3a8fe8)">R</div><div><div class="testi-name">Rohan Mehta</div><div class="testi-role">Software Engineer, Bengaluru</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"I got a home loan approved in 48 hours. The entire process was digital, transparent, and zero hassle. Best interest rate after comparing 10 banks."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div><div><div class="testi-name">Sneha Iyer</div><div class="testi-role">Architect, Mumbai</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"The international transfer feature saved me thousands in fees. As a freelancer working with global clients, NexaBank's FX rates are phenomenal."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#a8edea,#27ae60)">A</div><div><div class="testi-name">Aditya Kulkarni</div><div class="testi-role">Freelance Designer, Pune</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"Their AI fraud detection flagged a suspicious transaction before I even noticed. NexaBank's security team called me proactively. That level of care is rare."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#ffd89b,#f59e0b)">P</div><div><div class="testi-name">Priya Nair</div><div class="testi-role">CFO, Chennai</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"NexaBank's current account with API banking features has automated our entire payroll system. Perfect for startup speed banking."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#667eea,#764ba2)">V</div><div><div class="testi-name">Vikram Singh</div><div class="testi-role">Founder, Delhi NCR</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"Opened my savings account in under 5 minutes. The 7.5% interest on savings is incredible. The dashboard gives crystal clear view of my finances."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#11998e,#38ef7d)">D</div><div><div class="testi-name">Divya Reddy</div><div class="testi-role">Doctor, Hyderabad</div></div></div></div>
+      <!-- Duplicate for infinite scroll -->
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"NexaBank changed how I handle my finances. The app is incredibly intuitive, transfers are instant, and the customer support is unmatched."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#7BBBFC,#3a8fe8)">R</div><div><div class="testi-name">Rohan Mehta</div><div class="testi-role">Software Engineer, Bengaluru</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"I got a home loan approved in 48 hours. The entire process was digital, transparent, and zero hassle. Best interest rate after comparing 10 banks."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div><div><div class="testi-name">Sneha Iyer</div><div class="testi-role">Architect, Mumbai</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"The international transfer feature saved me thousands in fees. As a freelancer working with global clients, NexaBank's FX rates are phenomenal."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#a8edea,#27ae60)">A</div><div><div class="testi-name">Aditya Kulkarni</div><div class="testi-role">Freelance Designer, Pune</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"Their AI fraud detection flagged a suspicious transaction before I even noticed. That level of care is rare."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#ffd89b,#f59e0b)">P</div><div><div class="testi-name">Priya Nair</div><div class="testi-role">CFO, Chennai</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"Perfect for startup speed banking. API features automated our entire payroll system."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#667eea,#764ba2)">V</div><div><div class="testi-name">Vikram Singh</div><div class="testi-role">Founder, Delhi NCR</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"Opened my savings account in under 5 minutes. 7.5% interest on savings is incredible."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#11998e,#38ef7d)">D</div><div><div class="testi-name">Divya Reddy</div><div class="testi-role">Doctor, Hyderabad</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-grid">
+    <div class="contact-form-wrap">
+      <div class="form-title">Send Us a Message</div>
+      <div class="form-group"><input type="text" class="form-input" placeholder="Your Full Name"></div>
+      <div class="form-group"><input type="email" class="form-input" placeholder="Email Address"></div>
+      <div class="form-group"><input type="tel" class="form-input" placeholder="Phone Number"></div>
+      <div class="form-group"><textarea class="form-textarea" placeholder="How can we help you?"></textarea></div>
+      <button class="btn-submit">Send Message →</button>
+    </div>
+    <div class="contact-info">
+      <div class="section-tag">Contact Us</div>
+      <div class="contact-info-title">We're Here to Help You</div>
+      <div class="contact-info-sub">Our team of banking experts is available 24/7 to answer your questions and help you make the most of NexaBank.</div>
+      <div class="contact-items">
+        <div class="contact-item"><div class="contact-item-icon">📍</div><div><div class="contact-item-title">Head Office</div><div class="contact-item-val">NexaBank Tower, BKC, Bandra East, Mumbai – 400051</div></div></div>
+        <div class="contact-item"><div class="contact-item-icon">✉️</div><div><div class="contact-item-title">Email Support</div><div class="contact-item-val">support@nexabank.in | care@nexabank.in</div></div></div>
+        <div class="contact-item"><div class="contact-item-icon">📞</div><div><div class="contact-item-title">24/7 Helpline</div><div class="contact-item-val">1800-222-NEXA (6392) | +91 22 6888 7000</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo-name">Nexa<span>Bank</span></div>
+      <p>Next-generation digital banking for India's ambitious generation. Safe, smart, and always on.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn">𝕏</a>
+        <a href="#" class="social-btn">in</a>
+        <a href="#" class="social-btn">f</a>
+        <a href="#" class="social-btn">▶</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Quick Links</div>
+      <ul class="footer-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#loans">Loans</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Banking Services</div>
+      <ul class="footer-links">
+        <li><a href="#">Savings Account</a></li>
+        <li><a href="#">Current Account</a></li>
+        <li><a href="#">Credit Cards</a></li>
+        <li><a href="#">Fixed Deposits</a></li>
+        <li><a href="#">International Transfers</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Support</div>
+      <ul class="footer-links">
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Security Center</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Grievance Redressal</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-divider"></div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 NexaBank Ltd. Regulated by RBI. DICGC insured deposits up to ₹5 lakh.</div>
+    <div class="footer-copy">Designed with ❤️ for India</div>
+  </div>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+  // ── WHY CHOOSE US ANIMATIONS ──
+  gsap.fromTo('.whychoose-header',
+    { y: 50, opacity: 0 },
+    { y: 0, opacity: 1, duration: 1, ease: 'power3.out',
+      scrollTrigger: { trigger: '#whychoose', start: 'top 78%' } }
+  );
+  gsap.fromTo('.wcu-card',
+    { y: 70, opacity: 0, scale: 0.95 },
+    { y: 0, opacity: 1, scale: 1,
+      duration: 0.75,
+      stagger: { each: 0.12, from: 'start' },
+      ease: 'power3.out',
+      scrollTrigger: { trigger: '.wcu-grid', start: 'top 82%' }
+    }
+  );
+  gsap.fromTo('.wcu-cta',
+    { y: 40, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out',
+      scrollTrigger: { trigger: '.wcu-cta', start: 'top 88%' } }
+  );
+  document.querySelectorAll('.wcu-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - 0.5;
+      const y = (e.clientY - r.top)  / r.height - 0.5;
+      gsap.to(card, { rotationY: x*14, rotationX: -y*14,
+        transformPerspective:900, duration:0.4, ease:'power2.out' });
+    });
+    card.addEventListener('mouseleave', () =>
+      gsap.to(card, { rotationX:0, rotationY:0,
+        duration:0.7, ease:'elastic.out(1,0.4)' })
+    );
+  });
+  const wcuBtn = document.querySelector('.btn-wcu-cta');
+  if(wcuBtn){
+    wcuBtn.addEventListener('mousemove', e => {
+      const r = wcuBtn.getBoundingClientRect();
+      gsap.to(wcuBtn,{ x:(e.clientX-r.left-r.width/2)*0.28,
+        y:(e.clientY-r.top-r.height/2)*0.28, duration:0.3,ease:'power2.out'});
+    });
+    wcuBtn.addEventListener('mouseleave', ()=>
+      gsap.to(wcuBtn,{x:0,y:0,duration:0.5,ease:'elastic.out(1,0.5)'}));
+  }
+
+
+
+/* CURSOR */
+const cursor = document.getElementById('cursor');
+const trail  = document.getElementById('cursor-trail');
+document.addEventListener('mousemove', e => {
+  gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.05 });
+  gsap.to(trail,  { x: e.clientX, y: e.clientY, duration: 0.2 });
+});
+document.querySelectorAll('button,a,.service-card,.loan-card,.mvv-sc').forEach(el => {
+  el.addEventListener('mouseenter', () => { gsap.to(cursor,{scale:2.5,background:'#3a8fe8',duration:0.3}); gsap.to(trail,{scale:1.5,opacity:0.6,duration:0.3}); });
+  el.addEventListener('mouseleave', () => { gsap.to(cursor,{scale:1,background:'#7BBBFC',duration:0.3});   gsap.to(trail,{scale:1,opacity:1,duration:0.3}); });
+});
+
+/* SCROLL PROGRESS */
+const prog = document.getElementById('scrollProgress');
+window.addEventListener('scroll', () => {
+  prog.style.transform = `scaleX(${window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)})`;
+});
+
+/* NAVBAR */
+gsap.to('#navbar', { opacity:1, duration:0.8, delay:0.3 });
+window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60));
+
+/* HERO ENTRANCE */
+gsap.timeline({ defaults:{ ease:'power3.out' } })
+  .from('.hero-badge',          { y:30, opacity:0, duration:0.7, delay:0.4 })
+  .from('.hero-title',          { y:50, opacity:0, duration:0.9 }, '-=0.4')
+  .from('.hero-sub',            { y:30, opacity:0, duration:0.7 }, '-=0.5')
+  .from('.hero-btns',           { y:30, opacity:0, duration:0.6 }, '-=0.4')
+  .from('.hero-stats .stat-item',{ y:20, opacity:0, duration:0.5, stagger:0.12 }, '-=0.3')
+  .from('.dash-card',           { y:60, opacity:0, scale:0.9, duration:0.8, stagger:0.15, ease:'back.out(1.2)' }, '-=0.5');
+
+/* MOUSE PARALLAX */
+document.addEventListener('mousemove', e => {
+  const x = (e.clientX/window.innerWidth - 0.5) * 30;
+  const y = (e.clientY/window.innerHeight - 0.5) * 30;
+  gsap.to('.orb1',         { x:x*1.2, y:y*1.2, duration:1.2, ease:'power2.out' });
+  gsap.to('.orb2',         { x:-x*0.8,y:-y*0.8,duration:1.5, ease:'power2.out' });
+  gsap.to('.card-main',    { x:x*0.4, y:y*0.4, duration:1,   ease:'power2.out' });
+  gsap.to('.card-transfer',{ x:-x*0.3,y:-y*0.3,duration:1.2, ease:'power2.out' });
+  gsap.to('.card-analytics',{x:x*0.25,y:-y*0.35,duration:1.3,ease:'power2.out' });
+  gsap.to('.card-savings', { x:-x*0.2,y:y*0.5, duration:0.9, ease:'power2.out' });
+  gsap.to('.scene-center', { x:x*0.08, y:y*0.08, duration:1.5, ease:'power2.out' });
+  gsap.to('.scene-orbit',  { x:x*0.05, y:y*0.05, duration:1.8, ease:'power2.out' });
+});
+
+/* SCROLL ANIMATIONS */
+const stDefaults = { ease:'power3.out' };
+
+// Chaos
+gsap.fromTo('.chaos-header',{ y:40,opacity:0 },{ y:0,opacity:1,duration:0.9,...stDefaults, scrollTrigger:{ trigger:'#chaos',start:'top 80%' } });
+gsap.fromTo('.chaos-card.pain',   { x:-50,opacity:0 },{ x:0,opacity:1,duration:0.7,stagger:0.14,...stDefaults, scrollTrigger:{ trigger:'.chaos-grid',start:'top 82%' } });
+gsap.fromTo('.chaos-arrow-btn',   { scale:0,opacity:0 },{ scale:1,opacity:1,duration:0.6,ease:'back.out(1.7)', scrollTrigger:{ trigger:'.chaos-grid',start:'top 82%' }, delay:0.3 });
+gsap.fromTo('.chaos-card.solution',{ x:50,opacity:0 },{ x:0,opacity:1,duration:0.7,stagger:0.14,...stDefaults, scrollTrigger:{ trigger:'.chaos-grid',start:'top 82%' } });
+
+// About
+gsap.fromTo('.about-left-col',  { x:-60,opacity:0 },{ x:0,opacity:1,duration:1,...stDefaults, scrollTrigger:{ trigger:'#about',start:'top 78%' } });
+gsap.fromTo('.about-right-col', { x:60, opacity:0 },{ x:0,opacity:1,duration:1,...stDefaults, scrollTrigger:{ trigger:'#about',start:'top 78%' } });
+gsap.fromTo('.mvv-sc',          { x:-30,opacity:0 },{ x:0,opacity:1,duration:0.6,stagger:0.15,...stDefaults, scrollTrigger:{ trigger:'.mvv-cards-stack',start:'top 82%' } });
+gsap.fromTo('.scene-orbit',     { scale:0,opacity:0 },{ scale:1,opacity:1,duration:0.6,stagger:0.12,ease:'back.out(1.5)', scrollTrigger:{ trigger:'.about-icon-scene',start:'top 80%' }, delay:0.3 });
+gsap.fromTo('.scene-stat',      { y:20,opacity:0 },{ y:0,opacity:1,duration:0.5,stagger:0.15,...stDefaults, scrollTrigger:{ trigger:'.about-icon-scene',start:'top 80%' }, delay:0.6 });
+
+// Services
+gsap.fromTo('.services-header',{ y:40,opacity:0 },{ y:0,opacity:1,duration:0.8,...stDefaults, scrollTrigger:{ trigger:'#services',start:'top 80%' } });
+gsap.fromTo('.service-card',   { y:60,opacity:0 },{ y:0,opacity:1,duration:0.7,stagger:0.1,...stDefaults,  scrollTrigger:{ trigger:'.services-grid',start:'top 85%' } });
+
+// Why Us
+gsap.fromTo('.feature-item',{ x:-40,opacity:0 },{ x:0,opacity:1,duration:0.6,stagger:0.1,...stDefaults, scrollTrigger:{ trigger:'#whyus',start:'top 78%' } });
+gsap.fromTo('.stat-card',   { scale:0.8,opacity:0 },{ scale:1,opacity:1,duration:0.6,stagger:0.12,ease:'back.out(1.4)', scrollTrigger:{ trigger:'.stats-grid',start:'top 85%' } });
+
+// Loans
+gsap.fromTo('.loan-card',{ y:70,opacity:0 },{ y:0,opacity:1,duration:0.7,stagger:0.12,...stDefaults, scrollTrigger:{ trigger:'.loans-grid',start:'top 85%' } });
+
+// Security
+gsap.fromTo('.security-grid > div:first-child',{ x:-60,opacity:0 },{ x:0,opacity:1,duration:1,...stDefaults, scrollTrigger:{ trigger:'#security',start:'top 78%' } });
+gsap.fromTo('.shield-wrap',{ scale:0.5,opacity:0 },{ scale:1,opacity:1,duration:1,ease:'back.out(1.2)', scrollTrigger:{ trigger:'#security',start:'top 78%' } });
+gsap.fromTo('.sec-feat',   { x:-30,opacity:0 },{ x:0,opacity:1,duration:0.5,stagger:0.1,...stDefaults, scrollTrigger:{ trigger:'.security-features',start:'top 82%' } });
+
+// Testimonials
+gsap.fromTo('.testi-header',{ y:40,opacity:0 },{ y:0,opacity:1,duration:0.8,...stDefaults, scrollTrigger:{ trigger:'#testimonials',start:'top 80%' } });
+
+// Contact
+gsap.fromTo('.contact-form-wrap',{ x:-60,opacity:0 },{ x:0,opacity:1,duration:1,...stDefaults, scrollTrigger:{ trigger:'#contact',start:'top 78%' } });
+gsap.fromTo('.contact-info',     { x:60, opacity:0 },{ x:0,opacity:1,duration:1,...stDefaults, scrollTrigger:{ trigger:'#contact',start:'top 78%' } });
+
+// Footer
+gsap.fromTo('footer',{ y:40,opacity:0 },{ y:0,opacity:1,duration:0.8,...stDefaults, scrollTrigger:{ trigger:'footer',start:'top 90%' } });
+
+/* COUNTERS */
+function animateCounter(el, target, suffix) {
+  const dur = 2000; let start = null;
+  const step = ts => {
+    if (!start) start = ts;
+    const p = Math.min((ts-start)/dur,1);
+    const ease = 1-Math.pow(1-p,3);
+    el.textContent = Math.floor(ease*target).toLocaleString('en-IN') + suffix;
+    if (p<1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+document.querySelectorAll('.counter').forEach(el => {
+  const t = parseInt(el.dataset.target);
+  ScrollTrigger.create({ trigger:el, start:'top 80%', once:true,
+    onEnter: () => animateCounter(el, t, t>100?'+':'M+') });
+});
+document.querySelectorAll('.counter-cr').forEach(el => {
+  const t = parseInt(el.dataset.target);
+  ScrollTrigger.create({ trigger:el, start:'top 80%', once:true,
+    onEnter: () => { let st=null; const s=ts=>{ if(!st)st=ts; const p=Math.min((ts-st)/2000,1),e=1-Math.pow(1-p,3); el.textContent='₹'+Math.floor(e*t).toLocaleString('en-IN')+' Cr+'; if(p<1)requestAnimationFrame(s); }; requestAnimationFrame(s); } });
+});
+ScrollTrigger.create({ trigger:'.hero-stats', start:'top 90%', once:true,
+  onEnter: () => document.querySelectorAll('.hero-stats .stat-num').forEach(el => animateCounter(el,parseInt(el.dataset.count),parseInt(el.dataset.count)>100?'+':'M+')) });
+
+/* SECURITY PARTICLES */
+const pe = document.getElementById('particles');
+for(let i=0;i<25;i++){
+  const p=document.createElement('div'); p.className='particle';
+  const s=Math.random()*5+2;
+  p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;animation-duration:${Math.random()*10+8}s;animation-delay:${Math.random()*10}s;opacity:${Math.random()*0.5+0.2}`;
+  pe.appendChild(p);
+}
+
+/* MAGNETIC BUTTONS */
+document.querySelectorAll('.btn-primary,.btn-hero-primary,.btn-loan,.btn-submit').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const r=btn.getBoundingClientRect();
+    gsap.to(btn,{ x:(e.clientX-r.left-r.width/2)*0.25, y:(e.clientY-r.top-r.height/2)*0.25, duration:0.3,ease:'power2.out' });
+  });
+  btn.addEventListener('mouseleave', () => gsap.to(btn,{x:0,y:0,duration:0.5,ease:'elastic.out(1,0.5)'}));
+});
+
+/* 3D CARD TILT */
+document.querySelectorAll('.service-card,.loan-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r=card.getBoundingClientRect();
+    gsap.to(card,{ rotationY:(e.clientX-r.left)/r.width*12-6, rotationX:-((e.clientY-r.top)/r.height*12-6), transformPerspective:800, duration:0.4,ease:'power2.out' });
+  });
+  card.addEventListener('mouseleave', () => gsap.to(card,{rotationX:0,rotationY:0,duration:0.6,ease:'elastic.out(1,0.4)'}));
+});
+
+/* FORM SUBMIT */
+document.querySelector('.btn-submit').addEventListener('click', function(){
+  const o=this.textContent;
+  this.textContent='✓ Message Sent!'; this.style.background='linear-gradient(135deg,#27ae60,#2ecc71)';
+  gsap.from(this,{scale:0.95,duration:0.3,ease:'back.out(1.7)'});
+  setTimeout(()=>{ this.textContent=o; this.style.background=''; },3000);
+});
+
+/* SMOOTH SCROLL */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t) window.scrollTo({ top: t.offsetTop-80, behavior:'smooth' });
+  });
+});
+</script>
+</body>
+</html>
